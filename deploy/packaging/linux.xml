@@ -568,6 +568,7 @@ rm -f /etc/profile.d/mdsplus.csh
 
   <package name="kernel_bin" arch="bin" summary="MDSplus core binaries" description="MDSplus core binaries">
     <requires package="readline" external=""/>
+    <requires package="libxml" external=""/>
     <include dir="/usr/local/mdsplus/bin"/>
     <exclude file="/usr/local/mdsplus/bin/ScopePrinters"/>
     <exclude file="/usr/local/mdsplus/bin/dw*"/>
@@ -844,6 +845,7 @@ rm -f /etc/ld.so.conf.d/mdsplus.conf 2&gt;/dev/null
    <java package="java-runtime"/>
    <readline package="libreadline8"/>
    <libmotif package="libmrm4"/>
+   <libxml package="libxml2"/>
  </external_packages>
 
  <external_packages dist="Ubuntu22">
@@ -851,6 +853,7 @@ rm -f /etc/ld.so.conf.d/mdsplus.conf 2&gt;/dev/null
    <java package="java-runtime"/>
    <readline package="libreadline8"/>
    <libmotif package="libmrm4"/>
+   <libxml package="libxml2"/>
  </external_packages>
 
  <external_packages dist="Ubuntu20">
@@ -858,6 +861,7 @@ rm -f /etc/ld.so.conf.d/mdsplus.conf 2&gt;/dev/null
    <java package="java-runtime"/>
    <readline package="libreadline8"/>
    <libmotif package="libmrm4"/>
+   <libxml package="libxml2"/>
  </external_packages>
 
  <external_packages dist="Ubuntu18">
@@ -865,6 +869,7 @@ rm -f /etc/ld.so.conf.d/mdsplus.conf 2&gt;/dev/null
    <java package="java-runtime"/>
    <readline package="libreadline7"/>
    <libmotif package="libmrm4"/>
+   <libxml package="libxml2"/>
  </external_packages>
 
  <external_packages dist="DebianBookworm">
@@ -872,6 +877,7 @@ rm -f /etc/ld.so.conf.d/mdsplus.conf 2&gt;/dev/null
    <java package="java-runtime"/>
    <readline package="libreadline8"/>
    <libmotif package="motif"/>
+   <libxml package="libxml2"/>
  </external_packages>
 
  <external_packages dist="DebianBullseye">
@@ -879,6 +885,7 @@ rm -f /etc/ld.so.conf.d/mdsplus.conf 2&gt;/dev/null
    <java package="java-runtime"/>
    <readline package="libreadline8"/>
    <libmotif package="motif"/>
+   <libxml package="libxml2"/>
  </external_packages>
 
  <external_packages dist="el9">
@@ -886,6 +893,7 @@ rm -f /etc/ld.so.conf.d/mdsplus.conf 2&gt;/dev/null
    <java/>
    <readline/>
    <libmotif package="motif"/>
+   <libxml package="libxml2"/>
  </external_packages>
 
  <external_packages dist="el8">
@@ -893,6 +901,7 @@ rm -f /etc/ld.so.conf.d/mdsplus.conf 2&gt;/dev/null
    <java/>
    <readline/>
    <libmotif package="motif"/>
+   <libxml package="libxml2"/>
  </external_packages>
 
  <external_packages dist="el7">
@@ -900,6 +909,7 @@ rm -f /etc/ld.so.conf.d/mdsplus.conf 2&gt;/dev/null
    <java/>
    <readline/>
    <libmotif package="motif"/>
+   <libxml package="libxml2"/>
  </external_packages>
 
  <!-- platform last -->
@@ -908,6 +918,7 @@ rm -f /etc/ld.so.conf.d/mdsplus.conf 2&gt;/dev/null
    <java/>
    <readline/>
    <libmotif package="motif"/>
+   <libxml package="libxml2"/>
  </external_packages>
 
  <external_packages platform="alpine">
@@ -915,12 +926,14 @@ rm -f /etc/ld.so.conf.d/mdsplus.conf 2&gt;/dev/null
    <java package="openjdk8-jre"/>
    <readline/>
    <libmotif package="motif"/>
+   <libxml package="libxml2"/>
  </external_packages>
 
  <external_packages platform="debian">
    <numpy package="python-numpy"/>
    <java package="java-runtime"/>
    <libmotif package="libmrm4"/>
+   <libxml package="libxml2"/>
  </external_packages>
 
 </deploy>
