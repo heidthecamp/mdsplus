@@ -842,74 +842,60 @@ rm -f /etc/ld.so.conf.d/mdsplus.conf 2&gt;/dev/null
  <!-- dist first -->
   <external_packages dist="Ubuntu24">
    <numpy package="python3-numpy"/>
-   <java package="java-runtime"/>
    <readline package="libreadline8"/>
-   <libmotif package="libmrm4"/>
-   <libxml package="libxml2"/>
  </external_packages>
 
  <external_packages dist="Ubuntu22">
    <numpy package="python3-numpy"/>
-   <java package="java-runtime"/>
    <readline package="libreadline8"/>
-   <libmotif package="libmrm4"/>
-   <libxml package="libxml2"/>
  </external_packages>
 
  <external_packages dist="Ubuntu20">
    <numpy package="python3-numpy"/>
-   <java package="java-runtime"/>
    <readline package="libreadline8"/>
-   <libmotif package="libmrm4"/>
-   <libxml package="libxml2"/>
  </external_packages>
 
  <external_packages dist="Ubuntu18">
    <numpy package="python3-numpy"/>
-   <java package="java-runtime"/>
    <readline package="libreadline7"/>
-   <libmotif package="libmrm4"/>
-   <libxml package="libxml2"/>
  </external_packages>
 
  <external_packages dist="DebianBookworm">
    <numpy package="python3-numpy"/>
-   <java package="java-runtime"/>
    <readline package="libreadline8"/>
-   <libmotif package="motif"/>
-   <libxml package="libxml2"/>
  </external_packages>
 
  <external_packages dist="DebianBullseye">
    <numpy package="python3-numpy"/>
-   <java package="java-runtime"/>
    <readline package="libreadline8"/>
-   <libmotif package="motif"/>
-   <libxml package="libxml2"/>
+ </external_packages>
+
+ <external_packages dist="DebianBuster">
+   <numpy package="python3-numpy"/>
+   <readline package="libreadline8"/>
+ </external_packages>
+
+ <external_packages dist="DebianStretch">
+   <numpy package="python3-numpy"/>
+   <readline package="libreadline7"/>
  </external_packages>
 
  <external_packages dist="el9">
    <numpy package="python3-numpy"/>
    <java/>
    <readline/>
-   <libmotif package="motif"/>
-   <libxml package="libxml2"/>
  </external_packages>
 
  <external_packages dist="el8">
    <numpy package="python3-numpy"/>
    <java/>
    <readline/>
-   <libmotif package="motif"/>
-   <libxml package="libxml2"/>
  </external_packages>
 
  <external_packages dist="el7">
    <python-numpy package="numpy"/>
    <java/>
    <readline/>
-   <libmotif package="motif"/>
-   <libxml package="libxml2"/>
  </external_packages>
 
  <!-- platform last -->
