@@ -33,34 +33,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdlib.h>
 #include <sys/stat.h>
 
-#ifdef HAVE_READLINE_READLINE_H
-
 #include <readline/history.h>
 #include <readline/readline.h>
-
-#else
-
-#define UNUSED(gub) (void)(gub)
-
-static void using_history() { return; }
-
-static int read_history(const char * s) { UNUSED(s); return 0; }
-
-static int write_history(const char * s) { UNUSED(s); return 0; }
-
-static void add_history(const char * s) { UNUSED(s); return; }
-
-static int history_truncate_file(const char * s, int i) { UNUSED(s); UNUSED(i); return 0; }
-
-/* Routine to replace fgets using readline on stdin */
-static char *readline(char *prompt)
-{
-  if (prompt)
-    printf("%s ", prompt);
-  return fgets(malloc(1024), 1023, stdin);
-}
-
-#endif
 
 #define HFILE "/.tdic"
 
