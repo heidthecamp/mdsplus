@@ -27,6 +27,7 @@ import threading
 
 import time
 import socket
+import MDSplus.mdsscalar
 import numpy as np
 import sys
 if sys.version_info < (3,):
@@ -34,6 +35,7 @@ if sys.version_info < (3,):
 else:
     from queue import Queue, Empty
 
+import signal
 
 class _ACQ2106_435ST(MDSplus.Device):
     """
@@ -55,6 +57,34 @@ class _ACQ2106_435ST(MDSplus.Device):
     debugging() - is debugging enabled.  Controlled by environment variable DEBUG_DEVICES
 
     """
+
+    def setup(self):
+        ds = MDSplus.DeviceSetup(self)
+        ds.add_field(type='text', title='Comment', path='COMMENT', tooltip='A useful comment')
+        ds.add_field(path='NODE', title='Node', type='text', tooltip='IP Address')
+
+        tp = ds.add_panel(title='Timing')
+        tp.add_field(path='FREQ', title='Frequency', type='Numeric')
+        tp.add_field(
+            path='HW_FILTER',
+            title='Hardware Decimation',
+            type='dropdown',
+            options=[1, 2, 4, 8, 16, 32])
+
+        sp = ds.add_panel(title='Segment')
+        sp.add_field(path='SEG_LENGTH', title='Segment Length', type='Numeric')
+        sp.add_field(path='MAX_SEGMENTS', title='Max Segments', type='Numeric')
+        sp.add_field(path='SEG_EVENT', title='Segment Event', type='text')
+        ds.add_field(path='INIT_ACTION', title='Init Action', type='action')
+        ds.start()
+
+        def close_server(signum, frame):
+            print('Stopping...')
+            ds.stop()
+
+        signal.signal(signal.SIGINT, close_server)
+
+        ds.join()
 
     carrier_parts = [
         {

@@ -1,0 +1,33 @@
+ legend {
+    width:auto !important;
+    float: none;
+    padding: 0 5px;
+    margin-left: 10px;
+    border-bottom:none;
+}
+
+fieldset {
+    /* border-radius: 20px; */
+    border: 1px solid black;
+    padding: 10px;
+    padding-top: 0;
+}
+/* 
+label {
+    width: 200px;
+}
+
+.input-field {
+    padding: 2.5px;
+    display: block;
+}
+
+.input-value {
+    display: block;
+    width: auto;
+    align-items: center;
+}
+
+.l-button {
+    margin-left: -22px;
+}  */

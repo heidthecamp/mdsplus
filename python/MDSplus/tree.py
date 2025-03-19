@@ -4128,6 +4128,237 @@ If you did intend to write to a subnode of the device you should check the prope
             return cls_list[0]
         raise _exc.DevPYDEVICE_NOT_FOUND
 
+import os
+import mimetypes
+from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler, SimpleHTTPRequestHandler
+from functools import partial
+import urllib
+import threading
+import json
+
+class DeviceSetup(threading.Thread):
+
+    def __init__(self, device):
+        super().__init__(name=f'{device.__class__.__name__} DeviceSetup')
+
+        self.device = device
+
+        handler = partial(self.HTTPRequestHandler, self)
+
+        self.fields = []
+
+        self.server = ThreadingHTTPServer(('', 8081), handler)
+        self.location = 'http://%s:%d' % self.server.server_address
+        print(self.location)
+
+    def add_field(self, type, title, path, tooltip = None, options = None):
+        field = {
+            'type': type,
+            'title': title,
+            'path': path,
+            'options': options,
+        }
+
+        if tooltip is not None:
+            field['tooltip'] = tooltip
+        
+        if options is not None:
+            field['options'] = options
+
+        self.fields.append(field)
+
+    class Panel:
+        panel_properties = {}
+
+        def __init__(self, fields):
+            self.fields = fields
+        
+        def add_field(self, type, title, path, tooltip = None, options = None):
+            field = {
+                'type': type,
+                'title': title,
+                'path': path,
+                'options': options,
+            }
+
+            if tooltip is not None:
+                field['tooltip'] = tooltip
+            
+            if options is not None:
+                field['options'] = options
+
+            self.fields.append(field)
+
+    def add_panel(self, title):
+        panel = {
+            'title': title,
+            'type': 'panel',
+            'fields': []
+        }
+
+        self.fields.append(panel)
+
+        return self.Panel(self.fields[-1]['fields'])
+
+    class HTTPRequestHandler(BaseHTTPRequestHandler):
+        def __init__(self, setup, *args, **kwargs):
+            self.location = setup.location
+            self.tree = setup.device.tree
+            self.device = setup.device
+            self.fields = setup.fields
+
+            self.static_dir = os.path.join(os.path.dirname(__file__), 'static')
+
+            print(self.device)
+            super().__init__(*args, *kwargs)
+
+            
+
+        @staticmethod
+        def decompile(node):
+            return node.getRecord(_dat.EmptyData).decompile()
+
+        def _generate_html(self):
+            
+            def complete_field(field):
+                if 'fields' in field:
+                    for sub_field in field['fields']:
+                        complete_field(sub_field)
+
+                if field['type'] != 'panel':
+                    node = getattr(self.device, field['path'])
+                    data = node.getRecord()
+                    field['expression'] = data.decompile().strip(' ')
+                    # field['expression'] = data.decompile().replace('"', '&quot;').strip(' ')
+
+                if field['type'] == 'text' and isinstance(data, _scr.String):
+                    field['quoted'] = True
+            
+            data = {}
+            data['title'] = self.device.__class__.__name__
+            data['path'] = self.device.path
+            data['name'] = self.tree.name
+            data['shot'] = self.tree.shot
+            data['type'] = 'panel'
+            data['fields'] = self.fields.copy()
+            complete_field(data)
+
+            from pprint import pprint
+            pprint(data)
+
+            try:
+                # def default_json(t):
+                #     return f'{t}'
+                # jsonblob = json.dumps(self.fields.decode("utf-8"))
+                jsonblob = json.dumps(data)
+                # jsonblob = json.dumps(data, default=default_json)
+            except Exception as e:
+                print(e)
+                return '''
+                <html>
+                    <body>
+                        <h1>ERROR</h1>
+                    </body>
+                </html>
+                '''
+
+            html = f'''
+            <html>
+            <head>
+                <script type="text/javascript" src="static/device-setup.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"></link>
+                <link rel="stylesheet" href="/static/device-setup.css" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+            </head>
+            <body id="root">
+                <header id="header"></header>
+                <form method="post" id="device-setup-form" class="container"></form>
+            </body>
+            <!-- SCRIPTS -->
+            <script>
+                buildPage({jsonblob})
+            </script>
+            </html>
+            '''
+            return html
+            # <pre>{json.dumps(data, indent=2)}</pre>
+        
+        def _serve_static(self):
+            # TODO: protect against ../
+            path = os.path.join(self.static_dir, self.path.removeprefix('/static/'))
+            
+            file = open(path, 'rb')
+            if not file:
+                self.send_response(404)
+                return
+
+            mime = mimetypes.guess_type(path)
+            
+            self.send_response(200)
+            self.send_header('Content-Type', mime)
+            self.send_header('Cache-Control', 'no-cache')
+            self.end_headers()
+
+            self.wfile.write(file.read())
+
+        def do_HEAD(self):
+            if self.path.startswith('/static/'):
+                return self._serve_static()
+
+            self.send_response(200)
+
+        def do_GET(self):
+            if self.path.startswith('/static/'):
+                return self._serve_static()
+            
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/html')
+            self.end_headers()
+
+            if self.path == '/':
+                self.wfile.write(self._generate_html().encode())
+        
+        def do_POST(self):
+            print(self.headers)
+            
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
+            
+            # url form data -> list of tuples -> dict
+            data = dict(urllib.parse.parse_qsl(post_data.decode()))
+            print(data)
+
+            # Write device setup back to TDI.
+
+            # # if self.decompile(self.device.COMMENT) != values['COMMENT']:a
+
+            for key, expr in data.items():
+                node = getattr(self.device, key)
+                self.tree.setDefault(node)
+                value = self.tree.tdiCompile(expr)
+
+                print(expr)
+                print('decompile:')
+                print(self.decompile(node))
+                if self.decompile(node) != value.decompile():
+                    print(value)
+                    node.record = value
+
+            print('Done with for')
+
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/html')
+            self.end_headers()
+
+            if self.path == '/':
+                self.wfile.write(self._generate_html().encode())
+
+    def run(self):
+        self.server.serve_forever()
+
+    def stop(self):
+        self.server.shutdown()
 
 ############# dtype to classes ##################################
 _dsc.dtypeToClass[TreeNode.dtype_id] = TreeNode
