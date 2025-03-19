@@ -152,10 +152,9 @@ EXPORT char *TreePath(char const *tree, char *tree_lower_out)
 
 static char *ReplaceAliasTrees(char *tree_in)
 {
-  char * saveptr = NULL;
   size_t buflen = strlen(tree_in) + 1;
   char *ans = calloc(1, buflen);
-  char *tree = strtok_r(tree_in, ",", &saveptr);
+  char *tree = strtok(tree_in, ",");
   size_t i;
   while (tree)
   {
@@ -176,7 +175,7 @@ static char *ReplaceAliasTrees(char *tree_in)
       strcat(ans, tree);
     }
     free(treepath);
-    tree = strtok_r(0, ",", &saveptr);
+    tree = strtok(0, ",");
   }
   free(tree_in);
   for (i = 0; i < buflen; ++i)
@@ -828,7 +827,7 @@ static char *GetFname(char *tree, int shot)
   expression_d.length =
       (unsigned short)sprintf(expression, "%s_tree_filename(%d)", tree, shot);
   expression_d.pointer = expression;
-  static int (*TdiExecute)(struct descriptor *, ...) =
+  static int (*TdiExecute)() =
       NULL; // LibFindImageSymbol_C is a NOP if TdiExecute is already set
   status = LibFindImageSymbol_C("TdiShr", "TdiExecute", &TdiExecute);
   if (STATUS_OK)

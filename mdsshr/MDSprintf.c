@@ -86,9 +86,7 @@ EXPORT int MDSprintf(const char *const fmt, ...)
   if (!MDSvprintf)
     return (0);
   va_start(ap, fmt); /* initialize "ap"              */
-  int status = ((*MDSvprintf)(fmt, ap));
-  va_end(ap);
-  return status;
+  return ((*MDSvprintf)(fmt, ap));
 }
 
 /******************************************************************
@@ -97,21 +95,13 @@ EXPORT int MDSprintf(const char *const fmt, ...)
 int MDSfprintf(FILE *const fp, const char *const fmt, ...)
 {
   va_list ap;
-  int status;
 
   va_start(ap, fmt); /* initialize "ap"              */
-  if (fp != stderr && fp != stdout) {
-    status = (vfprintf(fp, fmt, ap));
-    va_end(ap);
-    return(status);
-  }
-  if (!MDSvfprintf) {
-    va_end(ap);
+  if (fp != stderr && fp != stdout)
+    return (vfprintf(fp, fmt, ap));
+  if (!MDSvfprintf)
     return (0);
-  }
-  status = ((*MDSvfprintf)(fp, fmt, ap));
-  va_end(ap);
-  return status;
+  return ((*MDSvfprintf)(fp, fmt, ap));
 }
 
 /***************************************************************

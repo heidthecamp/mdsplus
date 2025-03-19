@@ -909,7 +909,6 @@ Data *MDSplus::compileWithArgs(const char *expr, Tree *tree, int nArgs...)
     Data *currArg = va_arg(v, Data *);
     args[i] = currArg->convertToDsc();
   }
-  va_end(v);
   int status;
   Data *res = (Data *)compileFromExprWithArgs(
       expr, nArgs, (void *)args, tree, (tree) ? tree->getCtx() : NULL, &status);
@@ -954,7 +953,6 @@ Data *MDSplus::executeWithArgs(const char *expr, int nArgs...)
     Data *currArg = va_arg(v, Data *);
     args[i] = currArg->convertToDsc();
   }
-  va_end(v);
   int status;
   Tree *actTree = 0;
   try
@@ -1030,7 +1028,6 @@ Data *MDSplus::executeWithArgs(const char *expr, Tree *tree, int nArgs...)
     Data *currArg = va_arg(v, Data *);
     args[i] = currArg->convertToDsc();
   }
-  va_end(v);
   int status;
   Data *compData =
       (Data *)compileFromExprWithArgs((char *)expr, nArgs, (void *)args, tree,

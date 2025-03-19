@@ -54,7 +54,7 @@ int TdiCvtDxDx(struct descriptor *in_ptr, unsigned char *dtype_ptr,
   *******************/
   else if (in_ptr->dtype == DTYPE_DSC)
     status =
-        TdiCvtDxDx((mdsdsc_t *)in_ptr->pointer, dtype_ptr, out_ptr);
+        TdiCvtDxDx((struct descriptor *)in_ptr->pointer, dtype_ptr, out_ptr);
 
   /******************************
   Make space and convert into it.

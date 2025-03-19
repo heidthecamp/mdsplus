@@ -102,7 +102,7 @@ static int isEnabled(char *hookName)
 
 void TreeCallHookFun(char *hookType, char *hookName, ...)
 {
-  static int (*TdiExecute)(struct descriptor *, ...) = NULL;
+  static int (*TdiExecute)() = NULL;
   int status;
   status = LibFindImageSymbol_C("TdiShr", "TdiExecute", &TdiExecute);
   if (!(isEnabled(hookName) && STATUS_OK))

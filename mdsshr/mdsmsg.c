@@ -132,7 +132,6 @@ EXPORT int MdsMsg(        /* Return: sts provided by user         */
   {
     va_start(ap, fmt); /* initialize "ap"                      */
     vsprintf(MDS_MDSMSG_CSTR, fmt, ap);
-    va_end(ap);
     if (sts)
     {
       MDSfprintf(stderr, "%s\n\r    sts=%s\n\n\r", MDS_MDSMSG_CSTR,
